@@ -1,8 +1,10 @@
 package com.example.kieuptn.demoapplication;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -118,11 +120,12 @@ public class MyArrayAdapter extends ArrayAdapter<ObjectItem> {
         popupMenu.getMenuInflater().inflate(R.menu.custom_popup_menu, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 Database database = new Database(context);
                 String tableName, playlistName;
-
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_add_favories:
@@ -130,15 +133,12 @@ public class MyArrayAdapter extends ArrayAdapter<ObjectItem> {
                         return true;
                     case R.id.menu_add_playlist:
                         tableName = TABLE_PLAYLIST;
-                        if (database.countDataInTable(tableName) <= 0) {
-                            new AlertDialog.Builder(context).setTitle("Warning").setMessage("Enter key word").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).show();
-                        }
 
+                        LayoutInflater factory = LayoutInflater.from(context);
+                        final View customDialogView = factory.inflate(R.layout.custom_alert_dialog, null);
+                        builder.setView(customDialogView);
+
+                        builder.show();
                         return true;
                     default:
                         return false;
